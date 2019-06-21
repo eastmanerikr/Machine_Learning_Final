@@ -1,0 +1,102 @@
+---
+title: "Machine Learning Final"
+author: "Erik Eastman"
+date: "June 21, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+##Machine Learning - What is proper exercise?
+
+```{r Read Library, message=FALSE, warning=FALSE}
+library(dplyr)
+library(caret)
+library(RColorBrewer)
+```
+
+
+I first read in the data set and looked at the variables. There were some that were sparse in the training set and did not have any values in the test set. These were prime for elimination from the model as there are 160 total columns in the dataset so nearly that many predictors. I used the dplyr package to start cutting down the dataset.
+
+```{r Create Training Set, message=FALSE, warning=FALSE}
+trainingSetDL <- read.csv("https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv")
+##Removed these fields. Only available in about 400 observations out of 19K. Reduces possible predictors from 159 to 59.
+##No real difference in proportions of counts of type "Classe" in those with "Window_New" = Yes to overall population.
+trainingSetDL <- trainingSetDL %>% select(-starts_with("kurtosis")) %>%
+                                   select(-starts_with("skewness")) %>% 
+                                   select(-starts_with("max")) %>%
+                                   select(-starts_with("min")) %>%
+                                   select(-starts_with("amplitude")) %>%
+                                   select(-starts_with("var")) %>%
+                                   select(-starts_with("avg")) %>%
+                                   select(-starts_with("stddev")) %>%
+                                   select(-contains("timestamp")) %>%
+                                   select(-"user_name") %>%
+                                   select(-"new_window") %>%
+                                   select(-"X")
+```
+
+
+I printed out a correlation matrix to quickly manipulate and view in Excel to see if anything jumped out at me. Some items were highly correlated. I wanted to run several models with all variables first before I started to remove any more variables but I had a plan if I needed it.
+
+```{r Correlation Matrix, message=FALSE, warning=FALSE}
+corMatrix <- round(cor(trainingSetDL[,2:53]),2)
+writexl::write_xlsx(as.data.frame(corMatrix), path = "~/corMatrix.xlsx")
+```
+
+I created a training set and validation set to estimate how my various models to test may do on the actual training set (since we don't know the 'classe' outcome). I landed on a 70/30 split since we have a pretty large dataset.
+
+```{r Create Validation Set, message=FALSE, warning=FALSE}
+set.seed(5678)
+
+## Create Set to build model
+inBuild <- createDataPartition(y=trainingSetDL$classe, p = .7, list = FALSE)
+
+buildSet <- trainingSetDL[inBuild,] 
+
+##Create Set to validate modesl
+validationSet <- trainingSetDL[-inBuild,]
+
+```
+
+
+
+I Read in the testing set of 20 observations to predict against.
+
+```{r Create Testing Set, message=FALSE, warning=FALSE}
+testingSetDL <- read.csv("https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv")
+
+##Don't know outcome of test set but will need to append predictions to this set for peer scoring
+testingSetDL <- testingSetDL %>% select(-starts_with("kurtosis")) %>%
+  select(-starts_with("skewness")) %>% 
+  select(-starts_with("max")) %>%
+  select(-starts_with("min")) %>%
+  select(-starts_with("amplitude")) %>%
+  select(-starts_with("var")) %>%
+  select(-starts_with("avg")) %>%
+  select(-starts_with("stddev")) %>%
+  select(-contains("timestamp")) %>%
+  select(-"user_name") %>%
+  select(-"new_window")
+```
+
+
+I first tried and Linear Descriminant Analysis model since I figured it would run faster than a Random Forest or Boosting model. I used all defaults first. I tested the "Build Set/Training Set" against the "Validation Set". I printed out the Variable Importance data (not shown) and the confusion matrix (shown). The accuracy of this model was 72%. The accuracy is not high enough to pass the 80% threshold required by the quiz. I needed a different model. No amount of tuning was probably going to get me to 80%. (Although some other feature selection could get me there.)
+```{r Linear Descriminant Analysis Model, fig.cap= "Confusion Matrix", message=FALSE, warning=FALSE}
+modelLM <- train(classe ~ .,
+                 data = buildSet,
+                 method = "lda")
+
+importanceLM <-  varImp(modelLM)
+
+predictionLM <-  predict(modelLM, validationSet)
+
+
+confusionLM <- confusionMatrix(predictionLM, validationSet$classe) 
+confusionLMColor <- RColorBrewer::brewer.pal(5,"RdYlGn")
+
+plot(confusionLM$table, xlab = "Reference", ylab = "Prediction", main = "LDA Model Confusion Matrix", col = confusionLMColor)
+
+```
+
