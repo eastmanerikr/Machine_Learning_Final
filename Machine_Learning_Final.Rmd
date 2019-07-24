@@ -119,8 +119,6 @@ confusionRF <- confusionMatrix(predictionRF, validationSet$classe) ##Accuracy of
 confusionRF$table
 modelRF$finalModel$prediction.error ##Out of Bag Error Rate = .00175 
 
-confusionRFColor <- RColorBrewer::brewer.pal(5,"RdYlGn")
-qplot(confusionRF$table, xlab = "Reference", ylab = "Prediction", main = "Random Forest Model Confusion Matrix", col = confusionRFColor)
 
 finalPredictionRF <- predict(modelRF, testingSetDL)
 ##Out of Sample error will most likely be 0% or could be 5% in a small fraction of cases.
