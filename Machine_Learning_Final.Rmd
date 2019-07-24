@@ -106,7 +106,7 @@ plot(confusionLM$table, xlab = "Reference", ylab = "Prediction", main = "LDA Mod
 
 ```
 
-I next decided to try a Random Forest model. In Caret the "ranger" model does parallel processing much like XGBoost without having to do hot encoding.
+I next decided to try a Random Forest model. In Caret the "ranger" model does parallel processing much like XGBoost without having to do one-hot encoding.
 
 
 ```{r Random Forest Model, message=FALSE, warning=FALSE}
@@ -116,7 +116,7 @@ I next decided to try a Random Forest model. In Caret the "ranger" model does pa
 
 # predictionRF <- predict(modelRF, validationSet)
 confusionRF <- confusionMatrix(predictionRF, validationSet$classe) ##Accuracy of 99%
-confusionRF
+confusionRF$table
 modelRF$finalModel$prediction.error ##Out of Bag Error Rate = .00175 
 
 confusionRFColor <- RColorBrewer::brewer.pal(5,"RdYlGn")

@@ -110,7 +110,7 @@ plot(confusionLM$table, xlab = "Reference", ylab = "Prediction", main = "LDA Mod
 
 ![Confusion Matrix](figure/Linear Descriminant Analysis Model-1.png)
 
-I next decided to try a Random Forest model. In Caret the "ranger" model does parallel processing much like XGBoost without having to do hot encoding.
+I next decided to try a Random Forest model. In Caret the "ranger" model does parallel processing much like XGBoost without having to do one-hot encoding.
 
 
 
@@ -121,12 +121,10 @@ I next decided to try a Random Forest model. In Caret the "ranger" model does pa
 
 # predictionRF <- predict(modelRF, validationSet)
 confusionRF <- confusionMatrix(predictionRF, validationSet$classe) ##Accuracy of 99%
-confusionRF
+confusionRF$table
 ```
 
 ```
-## Confusion Matrix and Statistics
-## 
 ##           Reference
 ## Prediction    A    B    C    D    E
 ##          A 1673    1    0    0    0
@@ -134,29 +132,6 @@ confusionRF
 ##          C    0    1 1025    3    0
 ##          D    0    0    0  960    0
 ##          E    0    0    0    1 1080
-## 
-## Overall Statistics
-##                                           
-##                Accuracy : 0.9983          
-##                  95% CI : (0.9969, 0.9992)
-##     No Information Rate : 0.2845          
-##     P-Value [Acc > NIR] : < 2.2e-16       
-##                                           
-##                   Kappa : 0.9979          
-##                                           
-##  Mcnemar's Test P-Value : NA              
-## 
-## Statistics by Class:
-## 
-##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity            0.9994   0.9982   0.9990   0.9959   0.9982
-## Specificity            0.9998   0.9992   0.9992   1.0000   0.9998
-## Pos Pred Value         0.9994   0.9965   0.9961   1.0000   0.9991
-## Neg Pred Value         0.9998   0.9996   0.9998   0.9992   0.9996
-## Prevalence             0.2845   0.1935   0.1743   0.1638   0.1839
-## Detection Rate         0.2843   0.1932   0.1742   0.1631   0.1835
-## Detection Prevalence   0.2845   0.1939   0.1749   0.1631   0.1837
-## Balanced Accuracy      0.9996   0.9987   0.9991   0.9979   0.9990
 ```
 
 ```r
