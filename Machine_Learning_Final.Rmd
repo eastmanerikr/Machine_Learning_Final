@@ -2,7 +2,9 @@
 title: "Machine Learning Final"
 author: "Erik Eastman"
 date: "June 21, 2019"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -14,6 +16,9 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(caret)
 library(RColorBrewer)
+library(rmarkdown)
+library(ranger)
+library(ggplot2)
 ```
 
 
@@ -83,6 +88,7 @@ testingSetDL <- testingSetDL %>% select(-starts_with("kurtosis")) %>%
 
 
 I first tried and Linear Descriminant Analysis model since I figured it would run faster than a Random Forest or Boosting model. I used all defaults first. I tested the "Build Set/Training Set" against the "Validation Set". I printed out the Variable Importance data (not shown) and the confusion matrix (shown). The accuracy of this model was 72%. The accuracy is not high enough to pass the 80% threshold required by the quiz. I needed a different model. No amount of tuning was probably going to get me to 80%. (Although some other feature selection could get me there.)
+
 ```{r Linear Descriminant Analysis Model, fig.cap= "Confusion Matrix", message=FALSE, warning=FALSE}
 modelLM <- train(classe ~ .,
                  data = buildSet,
@@ -99,4 +105,29 @@ confusionLMColor <- RColorBrewer::brewer.pal(5,"RdYlGn")
 plot(confusionLM$table, xlab = "Reference", ylab = "Prediction", main = "LDA Model Confusion Matrix", col = confusionLMColor)
 
 ```
+
+I next decided to try a Random Forest model. In Caret the "ranger" model does parallel processing much like XGBoost without having to do hot encoding.
+
+
+```{r Random Forest Model, message=FALSE, warning=FALSE}
+# modelRF <- train(classe ~ ., 
+#                  data = buildSet, 
+#                  method = "ranger")
+
+# predictionRF <- predict(modelRF, validationSet)
+confusionRF <- confusionMatrix(predictionRF, validationSet$classe) ##Accuracy of 99%
+confusionRF
+modelRF$finalModel$prediction.error ##Out of Bag Error Rate = .00175 
+
+confusionRFColor <- RColorBrewer::brewer.pal(5,"RdYlGn")
+qplot(confusionRF$table, xlab = "Reference", ylab = "Prediction", main = "Random Forest Model Confusion Matrix", col = confusionRFColor)
+
+finalPredictionRF <- predict(modelRF, testingSetDL)
+##Out of Sample error will most likely be 0% or could be 5% in a small fraction of cases.
+finalPredictionRF ## B, A, B, A, A, E, D, B, A, A, B, C, B, A, E, E, A, B, B, B = 20/20 on quiz
+##True out of sample error in this case was 0%!
+ 
+```
+
+
 
