@@ -199,6 +199,7 @@ $(document).ready(function () {
 
 <div id="machine-learning---what-is-proper-exercise" class="section level2">
 <h2>Machine Learning - What is proper exercise?</h2>
+<p>For the best experience, please download the zip version of the files and view the html file in your internet browser.</p>
 <pre class="r"><code>library(dplyr)
 library(caret)
 library(RColorBrewer)
@@ -269,47 +270,10 @@ plot(confusionLM$table, xlab = &quot;Reference&quot;, ylab = &quot;Prediction&qu
 Confusion Matrix
 </p>
 </div>
-<p>I next decided to try a Random Forest model. In Caret the “ranger” model does parallel processing much like XGBoost without having to do one-hot encoding. The model had over a 99% accuracy rate and when run against the test set, predicted 20/20 values correctly.</p>
+<p>I next decided to try a Random Forest model. In Caret the “ranger” model does parallel processing much like XGBoost without having to do one-hot encoding. The model had over a 99% accuracy rate and when run against the test set, predicted 20/20 values correctly. I considered several ways to visualize the data but landed on just the confusion matrix table output as the model predicted so well that any graphs produced were relatively uninteresting.</p>
 <pre class="r"><code> modelRF &lt;- train(classe ~ ., 
                  data = buildSet, 
                  method = &quot;ranger&quot;)</code></pre>
-<pre><code>## Growing trees.. Progress: 90%. Estimated remaining time: 3 seconds.
-## Growing trees.. Progress: 100%. Estimated remaining time: 0 seconds.
-## Growing trees.. Progress: 100%. Estimated remaining time: 0 seconds.
-## Growing trees.. Progress: 100%. Estimated remaining time: 0 seconds.
-## Growing trees.. Progress: 94%. Estimated remaining time: 2 seconds.
-## Growing trees.. Progress: 92%. Estimated remaining time: 2 seconds.
-## Growing trees.. Progress: 93%. Estimated remaining time: 2 seconds.
-## Growing trees.. Progress: 100%. Estimated remaining time: 0 seconds.
-## Growing trees.. Progress: 100%. Estimated remaining time: 0 seconds.
-## Growing trees.. Progress: 91%. Estimated remaining time: 3 seconds.
-## Growing trees.. Progress: 93%. Estimated remaining time: 2 seconds.
-## Growing trees.. Progress: 98%. Estimated remaining time: 0 seconds.
-## Growing trees.. Progress: 100%. Estimated remaining time: 0 seconds.
-## Growing trees.. Progress: 92%. Estimated remaining time: 2 seconds.
-## Growing trees.. Progress: 97%. Estimated remaining time: 1 seconds.
-## Growing trees.. Progress: 93%. Estimated remaining time: 2 seconds.
-## Growing trees.. Progress: 100%. Estimated remaining time: 0 seconds.
-## Growing trees.. Progress: 93%. Estimated remaining time: 2 seconds.
-## Growing trees.. Progress: 88%. Estimated remaining time: 4 seconds.
-## Growing trees.. Progress: 90%. Estimated remaining time: 3 seconds.
-## Growing trees.. Progress: 90%. Estimated remaining time: 3 seconds.
-## Growing trees.. Progress: 98%. Estimated remaining time: 0 seconds.
-## Growing trees.. Progress: 99%. Estimated remaining time: 0 seconds.
-## Growing trees.. Progress: 92%. Estimated remaining time: 2 seconds.
-## Growing trees.. Progress: 92%. Estimated remaining time: 2 seconds.
-## Growing trees.. Progress: 93%. Estimated remaining time: 2 seconds.
-## Growing trees.. Progress: 99%. Estimated remaining time: 0 seconds.
-## Growing trees.. Progress: 98%. Estimated remaining time: 0 seconds.
-## Growing trees.. Progress: 96%. Estimated remaining time: 1 seconds.
-## Growing trees.. Progress: 91%. Estimated remaining time: 2 seconds.
-## Growing trees.. Progress: 95%. Estimated remaining time: 1 seconds.
-## Growing trees.. Progress: 92%. Estimated remaining time: 2 seconds.
-## Growing trees.. Progress: 100%. Estimated remaining time: 0 seconds.
-## Growing trees.. Progress: 91%. Estimated remaining time: 3 seconds.
-## Growing trees.. Progress: 93%. Estimated remaining time: 2 seconds.
-## Growing trees.. Progress: 97%. Estimated remaining time: 0 seconds.
-## Growing trees.. Progress: 99%. Estimated remaining time: 0 seconds.</code></pre>
 <pre class="r"><code>predictionRF &lt;- predict(modelRF, validationSet)
 confusionRF &lt;- confusionMatrix(predictionRF, validationSet$classe) ##Accuracy of 99%
 confusionRF$table</code></pre>

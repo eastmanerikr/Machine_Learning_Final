@@ -12,6 +12,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 ##Machine Learning - What is proper exercise?
 
+For the best experience, please download the zip version of the files and view the html file in your internet browser.
+
 ```{r Read Library, message=FALSE, warning=FALSE}
 library(dplyr)
 library(caret)
@@ -106,14 +108,16 @@ plot(confusionLM$table, xlab = "Reference", ylab = "Prediction", main = "LDA Mod
 
 ```
 
-I next decided to try a Random Forest model. In Caret the "ranger" model does parallel processing much like XGBoost without having to do one-hot encoding. The model had over a 99% accuracy rate and when run against the test set, predicted 20/20 values correctly.
+I next decided to try a Random Forest model. In Caret the "ranger" model does parallel processing much like XGBoost without having to do one-hot encoding. The model had over a 99% accuracy rate and when run against the test set, predicted 20/20 values correctly. I considered several ways to visualize the data but landed on just the confusion matrix table output as the model predicted so well that any graphs produced were relatively uninteresting.
 
 
-```{r Random Forest Model, message=FALSE, warning=FALSE}
+```{r Random Forest Model, message=FALSE, warning=FALSE, results='hide'}
  modelRF <- train(classe ~ ., 
                  data = buildSet, 
                  method = "ranger")
+```
 
+```{r Predict RF Model, message=FALSE, warning=FALSE}
 predictionRF <- predict(modelRF, validationSet)
 confusionRF <- confusionMatrix(predictionRF, validationSet$classe) ##Accuracy of 99%
 confusionRF$table
