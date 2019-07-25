@@ -3,8 +3,8 @@ title: "Machine Learning Final"
 author: "Erik Eastman"
 date: "June 21, 2019"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -106,15 +106,15 @@ plot(confusionLM$table, xlab = "Reference", ylab = "Prediction", main = "LDA Mod
 
 ```
 
-I next decided to try a Random Forest model. In Caret the "ranger" model does parallel processing much like XGBoost without having to do one-hot encoding.
+I next decided to try a Random Forest model. In Caret the "ranger" model does parallel processing much like XGBoost without having to do one-hot encoding. The model had over a 99% accuracy rate and when run against the test set, predicted 20/20 values correctly.
 
 
 ```{r Random Forest Model, message=FALSE, warning=FALSE}
-# modelRF <- train(classe ~ ., 
-#                  data = buildSet, 
-#                  method = "ranger")
+ modelRF <- train(classe ~ ., 
+                 data = buildSet, 
+                 method = "ranger")
 
-# predictionRF <- predict(modelRF, validationSet)
+predictionRF <- predict(modelRF, validationSet)
 confusionRF <- confusionMatrix(predictionRF, validationSet$classe) ##Accuracy of 99%
 confusionRF$table
 modelRF$finalModel$prediction.error ##Out of Bag Error Rate = .00175 
